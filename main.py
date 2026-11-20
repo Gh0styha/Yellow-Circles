@@ -1,30 +1,33 @@
 import sys
 from random import randint
-from UI import Ui_Form
+from PyQt6 import uic
 from PyQt6.QtGui import QPainter, QColor
 from PyQt6.QtWidgets import QApplication, QMainWindow
 
 
-class Window(QMainWindow, Ui_Form):
+class Window(QMainWindow):
     def __init__(self):
         super().__init__()
-        self.setupUi(self)
+        uic.loadUi('UI.ui', self)
+        self.x_ogr = (0, 400)
+        self.y_ogr = (0, 400)
+        self.r_ogr = (1, 100)
         self.circles = []
         self.btn.clicked.connect(self.add_circle)
 
     def add_circle(self):
-        d = randint(10, 100)
-        x = randint(0, self.width() - d)
-        y = randint(0, self.height() - d)
-        color = (randint(0, 255), randint(0, 255),randint(0, 255))
-        self.circles.append([(x, y, d, d), color])
+        x = randint(*self.x_ogr)
+        y = randint(*self.y_ogr)
+        r = randint(*self.r_ogr)
+        self.circles.append((x, y, r, r))
         self.update()
 
     def paintEvent(self, event):
         qp = QPainter(self)
-        for cir, col in self.circles:
-            qp.setBrush(QColor(*col))
-            qp.drawEllipse(*cir)
+        color = 'yellow'
+        qp.setBrush(QColor(color))
+        for c in self.circles:
+            qp.drawEllipse(*c)
 
 
 app = QApplication(sys.argv)
